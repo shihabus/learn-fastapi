@@ -1,4 +1,5 @@
 from random import randrange
+import time
 from typing import Optional
 from fastapi import FastAPI, Response, status, HTTPException
 from fastapi.params import Body
@@ -6,6 +7,28 @@ from fastapi.params import Body
 
 # for schema validation
 from pydantic import BaseModel
+
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+
+# connect to db using psycopg2
+while True:
+    try:
+        conn = psycopg2.connect(
+            host="localhost",
+            dbname="fastapi",
+            user="postgres",
+            password="1234",
+            cursor_factory=RealDictCursor,
+        )
+        cursor = conn.cursor()
+        print("DB connection was successful!")
+        break
+    except Exception as error:
+        print("Connecting to db failed")
+        print("Error: ", error)
+        time.sleep(2)
 
 app = FastAPI()
 
@@ -39,12 +62,15 @@ def find_post_index(id):
 @app.get("/")
 # function name can be anything, need not be root
 async def root():
-    return {"message": "Hello Shana"}
+    return {"message": "FASTAPI is running"}
 
 
 @app.get("/posts")
 async def get_posts():
-    return {"data": my_posts}
+    cursor.execute("""SELECT * FROM posts""")
+    posts = cursor.fetchall()
+    print(posts)
+    return {"data": posts}
 
 
 # Create a post route
@@ -53,23 +79,26 @@ async def get_posts():
 def create_posts(
     post: Post,
 ):
-    print(post)
-    # convert to dict
-    print(post.dict())
+    # don't do this as it is vulnerable to SQL injection
+    # cursor.execute(f"INSERT INTO posts (title,content,published) VALUES ({post.title}, {post.content}, {post.published})")
 
-    post_dict = post.dict()
-    post_dict["id"] = randrange(0, 100000)
-
-    my_posts.append(post_dict)
-    return {"data": post_dict}
+    # the SQL query is sanitized to prevent SQL injection
+    cursor.execute(
+        """INSERT INTO posts (title,content,published) VALUES (%s,%s,%s) RETURNING *""",
+        (post.title, post.content, post.published),
+    )
+    new_post = cursor.fetchone()
+    # commit the changes to save it to the actual DB
+    conn.commit()
+    return {"data": new_post}
 
 
 # id is path parameter
 @app.get("/posts/{id}")
 # we can validate the path params
 def get_post(id: int, response: Response):
-    print(id)
-    post = find_post(id)
+    cursor.execute("""SELECT * FROM posts WHERE id=%s""", str(id))
+    post = cursor.fetchone()
     if not post:
         # Response.status = status.HTTP_404_NOT_FOUND
         # return {"message": f"post with {id} was not found"}
@@ -82,21 +111,22 @@ def get_post(id: int, response: Response):
 # delete a post
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
-    post_idx = find_post_index(id)
-    if post_idx == None:
+    cursor.execute("""DELETE FROM posts WHERE id=%s RETURNING *""", str(id))
+    deleted_post = cursor.fetchone()
+    conn.commit()
+    if deleted_post == None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"post with {id} was not found")
-    deleted_post = my_posts.pop(post_idx)
     return {"data": deleted_post}
 
 
 @app.put("/posts/{id}")
 def update_post(id: int, post: Post):
-    post_idx = find_post_index(id)
-    if post_idx == None:
+    cursor.execute(
+        """UPDATE posts SET title=%s, content=%s, published=%s WHERE id=%s RETURNING *""",
+        (post.title, post.content, post.published, str(id)),
+    )
+    updated_post = cursor.fetchone()
+    conn.commit()
+    if updated_post == None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"post with {id} was not found")
-
-    post_dict = post.dict()
-    post_dict["id"] = id
-    my_posts[post_idx] = post
-
-    return {"data": my_posts}
+    return {"data": updated_post}

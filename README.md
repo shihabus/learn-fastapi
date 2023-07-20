@@ -26,3 +26,17 @@
 
 5.  Create modules
     Adding `__init__.py` inside a folder will make it a module
+
+6.  Database constraints
+    `NOT NULL`
+    `UNIQUE`
+
+7. Packages
+    Psycopg: Python PostgreSQL database adapter
+    `pip install psycopg2-binary`
+
+    sqlalchemy
+        - it is an ORM(Object Relation Mapper)
+        - it let us use Python to interact with DB, and abstract away SQL
+        - under the hood uses psycopg
+    `pip install SQLAlchemy==1.4.49`
