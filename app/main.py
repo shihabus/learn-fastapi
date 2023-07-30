@@ -1,14 +1,15 @@
 from fastapi import FastAPI
 
 # start using sqlalchemy
-from . import models
-from .database import engine
+# from . import models
+# from .database import engine
 
 # routes
 from .routers import posts, users, auth, vote
 
 # connect to DB
-models.Base.metadata.create_all(bind=engine)
+# now Alembic can take care of DB and table creation
+# models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

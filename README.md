@@ -32,27 +32,44 @@
     `UNIQUE`
 
 7.  Packages
-    - [Psycopg](https://www.psycopg.org/docs/): 
-        
-        - Python PostgreSQL database adapter
-        
-            `pip install psycopg2-binary`
 
-    - [sqlalchemy](https://docs.sqlalchemy.org/en/20/tutorial/index.html) 
-        - it is an ORM(Object Relation Mapper) - it let us use Python to interact with DB, and abstract away SQL - under the hood uses psycopg
-        
-            `pip install SQLAlchemy==1.4.49`
+    - [Psycopg](https://www.psycopg.org/docs/):
+
+      - Python PostgreSQL database adapter
+
+        `pip install psycopg2-binary`
+
+    - [sqlalchemy](https://docs.sqlalchemy.org/en/20/tutorial/index.html)
+
+      - it is an ORM(Object Relation Mapper) - it let us use Python to interact with DB, and abstract away SQL - under the hood uses psycopg
+
+        `pip install SQLAlchemy==1.4.49`
 
     - [Alembic](https://alembic.sqlalchemy.org/en/latest/tutorial.html)
-        - If you update any tables, you have to drop current tables and replace it with the new old. While dropping you could loose the data that already exist. This is coz, sqlAlchemy don't push the table schema changes if the table is already present in the DB.
-        - it can keep track of changes to DB and tables
+
+      - If you update any tables, you have to drop current tables and replace it with the new old. While dropping you could loose the data that already exist. This is coz, sqlAlchemy don't push the table schema changes if the table is already present in the DB.
+      - it can keep track of changes to DB and tables
 
         `alembic init __dir__`
 
+        `alembic revision -m "__message__"`
+
+        `alembic upgrade __revision_number__`
+
+        - show current revision applied
+
+          `alembic current`
+
+        - show latest revision
+
+          `alembic heads`
+
+        - this will auto-generate the alembic version based on the current model metadata state
+
+          `alembic revision --autogenerate -m "__message__"`
 
 8.  [PostgresSQL](https://www.postgresqltutorial.com/)
 
     - Composite key
-        - primary keys that span more than one column
-        - there might be duplicate in a column, but the row-wise combination of entries will be unique
- 
+      - primary keys that span more than one column
+      - there might be duplicate in a column, but the row-wise combination of entries will be unique
