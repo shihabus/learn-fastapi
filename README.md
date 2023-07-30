@@ -9,7 +9,7 @@
         1.2 Set terminal to use venv python interpreter
         `source env_name/bin/activate`
 
-2.  Install fastAPI(make sure you use venv interpreter)
+2.  Install [FastAPI](https://fastapi.tiangolo.com/tutorial/) (make sure you use venv interpreter)
 
     `pip install fastapi`
 
@@ -32,13 +32,27 @@
     `UNIQUE`
 
 7.  Packages
-    Psycopg: Python PostgreSQL database adapter
-    `pip install psycopg2-binary`
+    - [Psycopg](https://www.psycopg.org/docs/): 
+        
+        - Python PostgreSQL database adapter
+        
+            `pip install psycopg2-binary`
 
-    sqlalchemy - it is an ORM(Object Relation Mapper) - it let us use Python to interact with DB, and abstract away SQL - under the hood uses psycopg
-    `pip install SQLAlchemy==1.4.49`
+    - [sqlalchemy](https://docs.sqlalchemy.org/en/20/tutorial/index.html) 
+        - it is an ORM(Object Relation Mapper) - it let us use Python to interact with DB, and abstract away SQL - under the hood uses psycopg
+        
+            `pip install SQLAlchemy==1.4.49`
 
-8.  Composite key
-    - primary keys that span more than one column
-    - there might be duplicate in a column, but the row-wise combination of entries will be unique
+    - [Alembic](https://alembic.sqlalchemy.org/en/latest/tutorial.html)
+        - If you update any tables, you have to drop current tables and replace it with the new old. While dropping you could loose the data that already exist. This is coz, sqlAlchemy don't push the table schema changes if the table is already present in the DB.
+        - it can keep track of changes to DB and tables
+
+        `alembic init __dir__`
+
+
+8.  [PostgresSQL](https://www.postgresqltutorial.com/)
+
+    - Composite key
+        - primary keys that span more than one column
+        - there might be duplicate in a column, but the row-wise combination of entries will be unique
  
