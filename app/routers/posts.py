@@ -41,7 +41,7 @@ def create_posts(
     # )
 
     # spread operator
-    new_post = models.Post(**post.dict())
+    new_post = models.Post(owner_id=current_user.id, **post.dict())
     db.add(new_post)
     db.commit()
     # similar to RETURNING in SQL

@@ -19,6 +19,7 @@ class PostCreate(PostBase):
 class Post(PostBase):
     id: int
     created_at: datetime
+    owner_id: int
 
     # to tell it can be non dict data type response
     class Config:
