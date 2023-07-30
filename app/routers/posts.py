@@ -12,6 +12,7 @@ async def get_posts(db: Session = Depends(get_db)):
     # cursor.execute("""SELECT * FROM posts""")
     # posts = cursor.fetchall()
 
+    # posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).all()
     posts = db.query(models.Post).all()
 
     return posts
