@@ -13,6 +13,7 @@ async def get_posts(db: Session = Depends(get_db)):
     # posts = cursor.fetchall()
 
     posts = db.query(models.Post).all()
+
     return posts
 
 
@@ -78,11 +79,21 @@ def delete_post(
     # deleted_post = cursor.fetchone()
     # conn.commit()
 
-    post = db.query(models.Post).filter(models.Post.id == id)
-    if post.first() is None:
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
+
+    if post is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"post with {id} was not found")
-    post.delete(synchronize_session=False)
+
+    if post.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Not authorized to perform requested action.",
+        )
+
+    post_query.delete(synchronize_session=False)
     db.commit()
+
     return {"message": "post was deleted"}
 
 
@@ -102,8 +113,17 @@ def update_post(
 
     post_query = db.query(models.Post).filter(models.Post.id == id)
     post = post_query.first()
+
     if post is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"post with {id} was not found")
+
+    if post.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Not authorized to perform requested action.",
+        )
+
     post_query.update(updated_post.dict(), synchronize_session=False)
     db.commit()
+
     return post_query.first()
