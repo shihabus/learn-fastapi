@@ -31,12 +31,14 @@
     `NOT NULL`
     `UNIQUE`
 
-7. Packages
+7.  Packages
     Psycopg: Python PostgreSQL database adapter
     `pip install psycopg2-binary`
 
-    sqlalchemy
-        - it is an ORM(Object Relation Mapper)
-        - it let us use Python to interact with DB, and abstract away SQL
-        - under the hood uses psycopg
+    sqlalchemy - it is an ORM(Object Relation Mapper) - it let us use Python to interact with DB, and abstract away SQL - under the hood uses psycopg
     `pip install SQLAlchemy==1.4.49`
+
+8.  Composite key
+    - primary keys that span more than one column
+    - there might be duplicate in a column, but the row-wise combination of entries will be unique
+ 
