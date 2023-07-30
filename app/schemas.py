@@ -1,6 +1,7 @@
 # schema modal
 from datetime import datetime
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 
 # request
@@ -36,3 +37,17 @@ class UserOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    id: Optional[str] = None
