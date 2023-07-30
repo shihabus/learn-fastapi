@@ -73,3 +73,10 @@
     - Composite key
       - primary keys that span more than one column
       - there might be duplicate in a column, but the row-wise combination of entries will be unique
+
+9.  [PyTest](https://docs.pytest.org/en/7.4.x/)
+
+    - fixtures
+      - they are like to run before or after each test
+    - parameterize
+      - used to pass different parameters to the tests
