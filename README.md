@@ -77,6 +77,11 @@
 9.  [PyTest](https://docs.pytest.org/en/7.4.x/)
 
     - fixtures
-      - they are like to run before or after each test
+      - they are like the code that run before or after each test
     - parameterize
       - used to pass different parameters to the tests
+
+    ```
+    -x # stop when a test fail
+    --disable-warnings # silence warnings
+    ```
