@@ -1,4 +1,3 @@
-# ------ NOT USED ---------
 from fastapi.testclient import TestClient
 from app.main import app
 
@@ -19,7 +18,7 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-@pytest.fixture
+@pytest.fixture()
 def session():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
@@ -30,7 +29,7 @@ def session():
         db.close()
 
 
-@pytest.fixture
+@pytest.fixture()
 def client(session):
     # before the test yield
     def override_get_db():
@@ -43,3 +42,14 @@ def client(session):
     yield TestClient(app)
 
     # after the test yield
+
+
+# create test_user
+@pytest.fixture
+def test_user(client):
+    user_data = {"email": "test@test.com", "password": "123"}
+    res = client.post("/users", json=user_data)
+    new_user = res.json()
+    new_user["password"] = user_data["password"]
+    assert res.status_code == 201
+    return new_user
